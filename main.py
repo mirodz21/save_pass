@@ -27,6 +27,11 @@ def gen_pass():
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
+def clear_all():
+    website_entry.delete(0, "end")
+    username_entry.delete(0, "end")
+    password_entry.delete(0, "end")
+
 def save_details():
     website = website_entry.get()
     user = username_entry.get()
@@ -43,16 +48,22 @@ def save_details():
     else:
         is_okay = messagebox.askokcancel("Save details?", f"save the following details? \nWebsite: {website}\nUsername: {user}\nPassword: {password}")
         if is_okay:
-            with open("data.json","r") as f:
-                data = json.load(f)
-                data.update(save_data)
-            with open("data.json","w") as f:
-                json.dump(data,f, indent=4)
-                messagebox.showinfo("Success", "Details saved")
+            try:
+                with open("data.json","r") as f:
+                    data = json.load(f)
 
-                website_entry.delete(0, "end")
-                username_entry.delete(0, "end")
-                password_entry.delete(0, "end")
+            except FileNotFoundError:
+                with open("data.json","w") as f:
+                    json.dump(save_data,f, indent=4)
+            else:
+                data.update(save_data)
+
+                with open("data.json", "w") as f:
+                    json.dump(data, f, indent=4)
+
+            finally:
+                messagebox.showinfo("Success", "Details saved")
+                clear_all()
 
 
 # ---------------------------- UI SETUP ------------------------------- #
