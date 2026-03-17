@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from random import choice,randint,shuffle
+import json
 import pyperclip
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -30,14 +31,23 @@ def save_details():
     website = website_entry.get()
     user = username_entry.get()
     password = password_entry.get()
+    save_data = {
+        website: {
+            "username/email": user,
+            "password": password
+        }
+    }
 
     if len(website) == 0 or len(user) == 0 or len(password) == 0:
         messagebox.showerror("Error", "Please fill all fields")
     else:
         is_okay = messagebox.askokcancel("Save details?", f"save the following details? \nWebsite: {website}\nUsername: {user}\nPassword: {password}")
         if is_okay:
-            with open("data.txt","a") as f:
-                f.write(str(f"\n{website} : {user} : {password}"))
+            with open("data.json","r") as f:
+                data = json.load(f)
+                data.update(save_data)
+            with open("data.json","w") as f:
+                json.dump(data,f, indent=4)
                 messagebox.showinfo("Success", "Details saved")
 
                 website_entry.delete(0, "end")
@@ -71,7 +81,7 @@ username_text= Label(text="Email/Username: ")
 username_text.grid( row=2, column=0, sticky="w")
 
 username_entry = Entry(width=35, )
-username_entry.insert(0,"youremail@mail.com")
+username_entry.insert(0,"username@email.com")
 username_entry.grid(row=2, column=1, columnspan=2, sticky="ew")
 
 # PASSWORD
