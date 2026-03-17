@@ -66,6 +66,21 @@ def save_details():
                 clear_all()
 
 
+def search_details():
+    website = website_entry.get()
+    try:
+        with open("data.json","r") as f:
+            data = json.load(f)
+
+    except FileNotFoundError:
+        messagebox.showerror("Error", "No data found")
+
+    else:
+
+        if website in data:
+            messagebox.showinfo("Success", f"Username: {data[website]['username/email']} \nPassword: {data[website]['password']}")
+        else:
+            messagebox.showerror("Error", "No data found")
 # ---------------------------- UI SETUP ------------------------------- #
 
 window = Tk()
@@ -82,9 +97,13 @@ canvas.grid(column=1, row=0)
 website_text = Label(text="Website: ")
 website_text.grid(row=1, column=0, sticky="w")
 
-website_entry = Entry(width=35)
+website_entry = Entry(width=20)
 website_entry.focus()
-website_entry.grid(row=1, column=1, columnspan=2, sticky="ew")
+website_entry.grid(row=1, column=1, sticky="ew")
+
+website_btn = Button(text="Search", command=search_details, width=15)
+website_btn.config(font=("Arial", 10, "normal"))
+website_btn.grid(row=1, column=2, sticky="ew")
 
 # EMAIL/USERNAME
 
@@ -102,7 +121,7 @@ password_text.grid(row=3, column=0, sticky="w")
 password_entry = Entry(width=21)
 password_entry.grid(row=3, column=1 , sticky="ew")
 
-password_btn = Button(text="Generate Password", command=gen_pass)
+password_btn = Button(text="Generate Password", command=gen_pass, width=15)
 password_btn.grid(row=3, column=2)
 
 # SAVE PASS
